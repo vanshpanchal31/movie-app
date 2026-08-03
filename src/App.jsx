@@ -1,25 +1,15 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "./assets/vite.svg";
-import heroImg from "./assets/hero.png";
 import "./App.css";
+import MovieCards from "./components/moviecards.jsx";
 
 function App() {
-  const [count, setCount] = useState(0);
-
-  function handleClick() {
-    setCount(count + 1);
-  }
-  function Text(){
-    return <h1 >hello </h1>
-  }
-  return (
-    <div>
-      <button onClick={handleClick}>Count is {count}</button>
-      <Text />
-    </div>
+  const movienumber = 1;
+  
+   return (
+    <>
+      <MovieCards movie={{ title: "Tim's Film", release_Date: "2023-01-01" }} />
+      <MovieCards movie={{ title: "Tim's Film", release_Date: "2023-01-01" }} />
+    </>
   );
 }
 
 export default App;
- 
