@@ -1,4 +1,4 @@
-function MovieCards({ movie }) {
+function MovieCard({ movie }) {
   function handleClick() {
     alert("clicked!");
   }
@@ -8,7 +8,7 @@ function MovieCards({ movie }) {
         <img src={movie.url} alt={movie.title} />
         <div className="movie-overlay">
           <button className="favorite-button" onClick={handleClick}>
-            Click me!
+            like
           </button>
         </div>
       </div>
@@ -20,4 +20,4 @@ function MovieCards({ movie }) {
   );
 }
 
-export default MovieCards;
+export default MovieCard;
