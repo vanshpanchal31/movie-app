@@ -1,4 +1,4 @@
-import "./App.css";
+import "./css/App.css";
 import MovieCard from "./components/moviecard";
 import Home from "./pages/home";
 import Favorites from "./pages/favorite";
