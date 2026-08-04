@@ -1,15 +1,33 @@
 import MovieCard from "../components/moviecard";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { searchMovies, getPopularMovies } from "../services/api";
 import "../css/Home.css";
 
 function Home() {
   const [searchQuery, setSearchQuery] = useState("");
-  
-  const movies = [
-    { id: 1, title: "john wick", release_Date: "2023-01-01" },
-    { id: 2, title: "terminator", release_Date: "2023-02-01" },
-    { id: 3, title: "the matrix", release_Date: "2023-03-01" },
-  ];
+  const [movies, setMovies] = useState([]);
+  const [error, setError] = useState(null);
+const [loading, setLoading] = useState(false);
+
+
+  useEffect(() => {
+    const loadPopularMovies = async () => {
+      try {
+        const popularMovies = await getPopularMovies();
+        setMovies(popularMovies);
+      } catch (error) {
+        console.error("Error fetching popular movies:", error);
+        setError("Failed to fetch popular movies. Please try again later.");
+      }
+      finally {
+        setLoading(false);
+      }
+    };
+    loadPopularMovies();
+  }, []);
+
+  console.log(movies)
+
   const handleSearch = (e) => {
     e.preventDefault();
     alert(searchQuery);
@@ -30,9 +48,12 @@ function Home() {
       </form>
 
       <div className="movie-grid">
-        {movies.map((movie) => movie.title.toLowerCase().startsWith(searchQuery)&& (
-          <MovieCard key={movie.id} movie={movie} />
-        ))}
+        {movies.map(
+          (movie) =>
+          (
+              <MovieCard key={movie.id} movie={movie}  />
+            ),
+        )}
       </div>
     </div>
   );
