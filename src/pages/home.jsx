@@ -33,7 +33,7 @@ function Home() {
     setLoading(true);
     setError(null);
     try {
-      const searchResults = await searchMovies(searchQuery);
+      const searchResults = movies.filter( m =>  searchQuery === m )
       setMovies(searchResults);
       setError(null)
     } catch (err) {
