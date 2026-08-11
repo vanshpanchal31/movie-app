@@ -6,9 +6,12 @@ function MovieCard({ movie }) {
   const favorite = isFavorite(movie?.id);
   const posterUrl = movie?.poster || movie?.poster_path || movie?.Poster || "";
   const title = movie?.title || movie?.name || "Untitled movie";
-  const subtitle = movie?.genre || movie?.genres?.join(", ") || "Genre unavailable";
-  const releaseDate = movie?.year || movie?.release_date || movie?.releaseDate || "Coming soon";
+  const subtitle =
+    movie?.genre || movie?.genres?.join(", ") || "Genre unavailable";
+  const releaseDate =
+    movie?.year || movie?.release_date || movie?.releaseDate || "Coming soon";
   const rating = movie?.imdbRating || movie?.rating || "N/A";
+
 
   function handleClick(e) {
     e.preventDefault();
@@ -26,7 +29,8 @@ function MovieCard({ movie }) {
           src={posterUrl || "https://via.placeholder.com/300x450?text=No+Image"}
           alt={title}
           onError={(event) => {
-            event.currentTarget.src = "https://via.placeholder.com/300x450?text=No+Image";
+            event.currentTarget.src =
+              "https://via.placeholder.com/300x450?text=No+Image";
           }}
         />
         <div className="movie-overlay">

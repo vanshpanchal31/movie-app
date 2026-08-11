@@ -22,6 +22,6 @@ function App() {
       </MovieProvider>
     </>
   );
-}
+} 
 
 export default App;
