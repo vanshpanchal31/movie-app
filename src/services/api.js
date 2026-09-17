@@ -44,7 +44,26 @@ export const searchMovies = async (query) => {
     }
 
     const payload = await response.json();
-    return normalizeMovies(payload);
+    const movies = normalizeMovies(payload);
+    const searchTerm = query.trim().toLowerCase();
+
+    return movies.filter((movie) => {
+      const searchableText = [
+        movie?.title,
+        movie?.name,
+        movie?.genre,
+        movie?.genres,
+        movie?.plot,
+        movie?.actors,
+        movie?.director,
+      ]
+        .flat()
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      return searchableText.includes(searchTerm);
+    });
   } catch (error) {
     console.error("Unable to search movies:", error);
     return [];

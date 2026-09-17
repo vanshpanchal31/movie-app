@@ -9,8 +9,21 @@ function Home() {
   const [allMovies, setAllMovies] = useState([]);
   const [selectedGenre, setSelectedGenre] = useState("All");
   const [sortOrder, setSortOrder] = useState("latest");
+  const [openDropdown, setOpenDropdown] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest(".filter-dropdown")) {
+        setOpenDropdown(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const loadPopularMovies = async () => {
@@ -28,6 +41,31 @@ function Home() {
     };
     loadPopularMovies();
   }, []);
+
+  useEffect(() => {
+    if (!allMovies.length || !searchQuery.trim()) return;
+
+    const timeoutId = setTimeout(() => {
+      const runSearch = async () => {
+        setLoading(true);
+        setError(null);
+
+        try {
+          const searchResults = await searchMovies(searchQuery);
+          setMovies(searchResults);
+        } catch (err) {
+          console.error(err);
+          setError("Failed to search movies.");
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      runSearch();
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery, allMovies]);
 
   const extractGenres = (movie) => {
     const rawGenres = movie?.genres || movie?.genre || "";
@@ -104,8 +142,7 @@ function Home() {
   }, [movies, selectedGenre, sortOrder]);
 
   const handleSearch = async (e) => {
-    e.preventDefault();
-    if (loading) return;
+    e?.preventDefault();
 
     setLoading(true);
     setError(null);
@@ -135,7 +172,14 @@ function Home() {
             placeholder="Search movies..."
             className="search-input"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              setSearchQuery(value);
+              if (!value.trim()) {
+                setMovies(allMovies);
+                setSelectedGenre("All");
+              }
+            }}
           />
           <button type="submit" className="search-button">
             Search
@@ -144,16 +188,23 @@ function Home() {
 
         <div className="filter-panel">
           <div className="filter-group filter-dropdown">
-            <button type="button" className="dropdown-toggle">
+            <button
+              type="button"
+              className={`dropdown-toggle ${openDropdown === "genre" ? "open" : ""}`}
+              onClick={() => setOpenDropdown((current) => (current === "genre" ? null : "genre"))}
+            >
               {selectedGenre}
             </button>
-            <div className="dropdown-menu category-menu">
+            <div className={`dropdown-menu category-menu ${openDropdown === "genre" ? "open" : ""}`}>
               {genreOptions.map((genre) => (
                 <button
                   key={genre}
                   type="button"
                   className={`dropdown-item ${selectedGenre === genre ? "active" : ""}`}
-                  onClick={() => setSelectedGenre(genre)}
+                  onClick={() => {
+                    setSelectedGenre(genre);
+                    setOpenDropdown(null);
+                  }}
                 >
                   {genre}
                 </button>
@@ -162,16 +213,23 @@ function Home() {
           </div>
 
           <div className="filter-group filter-dropdown">
-            <button type="button" className="dropdown-toggle">
+            <button
+              type="button"
+              className={`dropdown-toggle ${openDropdown === "sort" ? "open" : ""}`}
+              onClick={() => setOpenDropdown((current) => (current === "sort" ? null : "sort"))}
+            >
               {sortLabel}
             </button>
-            <div className="dropdown-menu sort-menu">
+            <div className={`dropdown-menu sort-menu ${openDropdown === "sort" ? "open" : ""}`}>
               {sortOptions.map((option) => (
                 <button
                   key={option.value}
                   type="button"
                   className={`dropdown-item ${sortOrder === option.value ? "active" : ""}`}
-                  onClick={() => setSortOrder(option.value)}
+                  onClick={() => {
+                    setSortOrder(option.value);
+                    setOpenDropdown(null);
+                  }}
                 >
                   {option.label}
                 </button>
