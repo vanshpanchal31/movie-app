@@ -133,6 +133,11 @@
   pointer-events: auto;
 }
 
+.category-menu.open {
+  max-height: 130px;
+  overflow-y: auto;
+}
+
 .dropdown-item {
   width: 100%;
   display: block;

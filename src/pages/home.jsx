@@ -7,7 +7,7 @@ function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [movies, setMovies] = useState([]);
   const [allMovies, setAllMovies] = useState([]);
-  const [selectedGenre, setSelectedGenre] = useState("All");
+  const [selectedGenre, setSelectedGenre] = useState("All genres");
   const [sortOrder, setSortOrder] = useState("latest");
   const [openDropdown, setOpenDropdown] = useState(null);
   const [error, setError] = useState(null);
@@ -42,31 +42,6 @@ function Home() {
     loadPopularMovies();
   }, []);
 
-  useEffect(() => {
-    if (!allMovies.length || !searchQuery.trim()) return;
-
-    const timeoutId = setTimeout(() => {
-      const runSearch = async () => {
-        setLoading(true);
-        setError(null);
-
-        try {
-          const searchResults = await searchMovies(searchQuery);
-          setMovies(searchResults);
-        } catch (err) {
-          console.error(err);
-          setError("Failed to search movies.");
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      runSearch();
-    }, 300);
-
-    return () => clearTimeout(timeoutId);
-  }, [searchQuery, allMovies]);
-
   const extractGenres = (movie) => {
     const rawGenres = movie?.genres || movie?.genre || "";
 
@@ -90,7 +65,7 @@ function Home() {
       extractGenres(movie).forEach((genre) => options.add(genre));
     });
 
-    return ["All", ...Array.from(options).sort()];
+    return ["All genres", ...Array.from(options).sort()];
   }, [allMovies]);
 
   const sortOptions = [
@@ -105,7 +80,7 @@ function Home() {
   const sortLabel = sortOptions.find((option) => option.value === sortOrder)?.label || "Sort by";
 
   const filterByGenre = (movie) => {
-    if (selectedGenre === "All") return true;
+    if (selectedGenre === "All genres") return true;
     return extractGenres(movie).includes(selectedGenre);
   };
 
@@ -150,7 +125,7 @@ function Home() {
     try {
       if (!searchQuery.trim()) {
         setMovies(allMovies);
-        setSelectedGenre("All");
+        setSelectedGenre("All genres");
       } else {
         const searchResults = await searchMovies(searchQuery);
         setMovies(searchResults);
@@ -177,7 +152,7 @@ function Home() {
               setSearchQuery(value);
               if (!value.trim()) {
                 setMovies(allMovies);
-                setSelectedGenre("All");
+                setSelectedGenre("All genres");
               }
             }}
           />
